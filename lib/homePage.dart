@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   //ball aligment
   double ballX = 0;
   double ballY = 0;
-  double ballXIncrement = 0.01;
+  double ballXIncrement = 0.02;
   double ballYIncrement = 0.01;
   var ballYDirection = Direction.DOWN;
   var ballXDirection = Direction.LEFT;
@@ -31,17 +31,21 @@ class _HomePageState extends State<HomePage> {
   double playerwidth = 0.4;
 
   //brick properties
-  static double firstBrickX = -0.5;  
+  static double firstBrickX = -1 + wallGap;  
   static double firstBrickY = -0.9;
   static double brickHeight = 0.05;
   static double brickWidth = 0.4; 
-  static double brickGap = 0.2.; 
+  static double brickGap = 0.01; 
+  static int numberOfBricksInRow = 4;
+  static double wallGap = 0.5 * (2 - numberOfBricksInRow * brickWidth - (numberOfBricksInRow -1) * brickGap);
   bool brickBroken = false;
 
   List myBricks = [
     // [X, Y, BrickBroken]
-    [firstBrickX,firstBrickY,false],
-    [firstBrickX + brickWidth + brickGap,firstBrickY,false],
+    [firstBrickX + 0 * (brickWidth + brickGap),firstBrickY,false],
+    [firstBrickX + 1 * (brickWidth + brickGap),firstBrickY,false],
+    [firstBrickX + 2 * (brickWidth + brickGap),firstBrickY,false],
+    [firstBrickX + 3 * (brickWidth + brickGap),firstBrickY,false],
   ];
   //game setting
   bool hasGameStarted = false;
@@ -72,15 +76,82 @@ class _HomePageState extends State<HomePage> {
   }
 
   void brokenBrick(){
-    if(ballX >= myBricks[0][0] &&
-       ballX <= myBricks[0][0] + brickWidth &&
-       ballY <= myBricks[0][1] + brickHeight &&
-       brickBroken == false){
+  //check for when ball is inside the brick (aka hits bricks)
+    for(int i = 0; i < myBricks.length; i++)
+    {
+      if(ballX >= myBricks[i][0] &&
+       ballX <= myBricks[i][0] + brickWidth &&
+       ballY <= myBricks[i][1] + brickHeight &&
+       myBricks[i][2] == false){
        setState(() {
-         brickBroken = true;
-         ballYDirection = Direction.DOWN;
-       });
-    }    
+         myBricks[i][2] = true;
+
+        //since brick is broken,change direction of ball
+        //based on which side the ball is hit
+        // to do this, calculate the diastance of the ball from each of the 4 sides
+        ////the smallest distance is the side of ball has it
+        
+        double leftSideDist = (myBricks[i][0] - ballX).abs();
+        double rightSideDist = (myBricks[i][0] + brickWidth - ballX).abs();
+        double topSideDist = (myBricks[i][0] - ballY).abs();
+        double bottomSideDist = (myBricks[i][0] + brickHeight - ballY).abs();
+
+        String min = findMin(leftSideDist, rightSideDist, topSideDist, bottomSideDist);
+
+        switch ( min) 
+        {
+          case 'left' : ballYDirection = Direction.LEFT;
+
+          break;
+          case 'right' : ballYDirection = Direction.RIGHT;
+
+          break;
+          case 'up' : ballYDirection = Direction.UP;
+
+          break;
+          case 'down' : ballYDirection = Direction.DOWN;
+
+          break;
+        }
+
+       }
+      );
+     }  
+    }  
+   }
+  //return the smallest side
+  String findMin(double a, double b, double c, double d)
+  {
+    List<double> myList = [
+      a,
+      b,
+      c,
+      d,
+    ];
+  double currentMin = a;
+  for (int i =0; i < myList.length; i++)
+  {
+    if(myList[i] < currentMin)
+    {
+      currentMin = myList[i];
+    }
+  }
+
+  if((currentMin - a).abs() < 0.01)
+  {
+    return 'left';
+  }else if((currentMin - b).abs() < 0.01)
+  {
+    return 'rigth';
+  }else if((currentMin - c).abs() < 0.01)
+  {
+    return 'top';
+  }else if((currentMin - d).abs() < 0.01)
+  {
+    return 'bottom';
+  }
+
+  return '';
   }
 
 
@@ -210,14 +281,28 @@ class _HomePageState extends State<HomePage> {
                      brickWidth: brickWidth,
                      brickX: myBricks[0][0],
                      brickY: myBricks[0][1],
-                     brickBroken: brickBroken,
+                     brickBroken: myBricks[0][2],
                   ),
                   BrickScreen(
                     brickHeight: brickHeight,
                      brickWidth: brickWidth,
                      brickX: myBricks[1][0],
                      brickY: myBricks[1][1],
-                     brickBroken: brickBroken,
+                     brickBroken: myBricks[1][2],
+                  ),
+                  BrickScreen(
+                    brickHeight: brickHeight,
+                     brickWidth: brickWidth,
+                     brickX: myBricks[2][0],
+                     brickY: myBricks[2][1],
+                     brickBroken: myBricks[2][2],
+                  ),
+                  BrickScreen(
+                    brickHeight: brickHeight,
+                     brickWidth: brickWidth,
+                     brickX: myBricks[3][0],
+                     brickY: myBricks[3][1],
+                     brickBroken: myBricks[3][2],
                   ),
                 ],
               ),
