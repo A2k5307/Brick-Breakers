@@ -23,8 +23,8 @@ class MyBall extends StatelessWidget {
     ),
   ) : Container(
     alignment: Alignment(ballX, ballY),
-    child: AvatarGlow(
-      endRadius: 60.0,
+    child:AvatarGlow(
+        glowColor: Colors.blueGrey,
       child: Material(
       elevation: 8.0,
       shape: CircleBorder(),

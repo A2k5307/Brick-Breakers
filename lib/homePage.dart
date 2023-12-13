@@ -233,6 +233,23 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //reset the game to the initial value
+  void resetGame(){
+    setState(() {
+      playerX = -0.2;
+      ballX = 0;
+      ballY = 0;
+      isGameOver = false;
+      hasGameStarted = false;
+    myBricks = [
+    // [X, Y, BrickBroken]
+    [firstBrickX + 0 * (brickWidth + brickGap),firstBrickY,false],
+    [firstBrickX + 1 * (brickWidth + brickGap),firstBrickY,false],
+    [firstBrickX + 2 * (brickWidth + brickGap),firstBrickY,false],
+  ];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return RawKeyboardListener(
@@ -258,10 +275,14 @@ class _HomePageState extends State<HomePage> {
                   
                   //START GAME BUTTON
                   CoverScreen(
-                    hasGameStarted: hasGameStarted
+                    hasGameStarted: hasGameStarted,
+                    isGameOver : isGameOver,
                     ),
 
-                  DeadScreen(isGameOver: isGameOver),
+                  DeadScreen(
+                    isGameOver: isGameOver,
+                    function: resetGame,
+                  ),
                   
                   //My Ball
                   MyBall(
