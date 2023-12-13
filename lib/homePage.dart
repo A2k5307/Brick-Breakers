@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   static double brickHeight = 0.05;
   static double brickWidth = 0.4; 
   static double brickGap = 0.01; 
-  static int numberOfBricksInRow = 4;
+  static int numberOfBricksInRow = 3;
   static double wallGap = 0.5 * (2 - numberOfBricksInRow * brickWidth - (numberOfBricksInRow -1) * brickGap);
   bool brickBroken = false;
 
@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage> {
     [firstBrickX + 0 * (brickWidth + brickGap),firstBrickY,false],
     [firstBrickX + 1 * (brickWidth + brickGap),firstBrickY,false],
     [firstBrickX + 2 * (brickWidth + brickGap),firstBrickY,false],
-    [firstBrickX + 3 * (brickWidth + brickGap),firstBrickY,false],
   ];
   //game setting
   bool hasGameStarted = false;
@@ -100,10 +99,10 @@ class _HomePageState extends State<HomePage> {
 
         switch ( min) 
         {
-          case 'left' : ballYDirection = Direction.LEFT;
+          case 'left' : ballXDirection = Direction.LEFT;
 
           break;
-          case 'right' : ballYDirection = Direction.RIGHT;
+          case 'right' : ballXDirection = Direction.RIGHT;
 
           break;
           case 'up' : ballYDirection = Direction.UP;
@@ -268,6 +267,8 @@ class _HomePageState extends State<HomePage> {
                   MyBall(
                     ballX: ballX,
                     ballY: ballY,
+                    hasGameStarted : hasGameStarted,
+                    isGameOver : isGameOver,
                   ),
 
                   //My player
@@ -296,13 +297,6 @@ class _HomePageState extends State<HomePage> {
                      brickX: myBricks[2][0],
                      brickY: myBricks[2][1],
                      brickBroken: myBricks[2][2],
-                  ),
-                  BrickScreen(
-                    brickHeight: brickHeight,
-                     brickWidth: brickWidth,
-                     brickX: myBricks[3][0],
-                     brickY: myBricks[3][1],
-                     brickBroken: myBricks[3][2],
                   ),
                 ],
               ),
